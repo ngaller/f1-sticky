@@ -17,16 +17,10 @@ export class Component extends React.Component {
   setChildRef(node) {
     if(node) {
       this.node = node
-      this.setState({
-        mytop: node.offsetTop || 0,
-        height: node.getBoundingClientRect().height || this.state.height
-      })
     }
   }
 
-  componentDidUpdate() {
-    // recalculate the height and position.
-    // XXX Do we need to try and do that when the browser is resized?
+  recalcHeight() {
     const newState = {
       height: this.node.getBoundingClientRect().height || this.state.height
     }
@@ -37,6 +31,16 @@ export class Component extends React.Component {
     if(newState.height !== this.state.height ||
       (newState.mytop && newState.mytop !== this.state.mytop))
       this.setState(newState)
+  }
+
+  componentDidMount() {
+    this.recalcHeight()
+  }
+
+  componentDidUpdate() {
+    // recalculate the height and position.
+    // XXX Do we need to try and do that when the browser is resized?
+    this.recalcHeight()
   }
 
   isSticky() {

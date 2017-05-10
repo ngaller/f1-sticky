@@ -48,17 +48,11 @@ var Component = exports.Component = function (_React$Component) {
     value: function setChildRef(node) {
       if (node) {
         this.node = node;
-        this.setState({
-          mytop: node.offsetTop || 0,
-          height: node.getBoundingClientRect().height || this.state.height
-        });
       }
     }
   }, {
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate() {
-      // recalculate the height and position.
-      // XXX Do we need to try and do that when the browser is resized?
+    key: 'recalcHeight',
+    value: function recalcHeight() {
       var newState = {
         height: this.node.getBoundingClientRect().height || this.state.height
       };
@@ -67,6 +61,18 @@ var Component = exports.Component = function (_React$Component) {
         newState.mytop = this.node.offsetTop;
       }
       if (newState.height !== this.state.height || newState.mytop && newState.mytop !== this.state.mytop) this.setState(newState);
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.recalcHeight();
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      // recalculate the height and position.
+      // XXX Do we need to try and do that when the browser is resized?
+      this.recalcHeight();
     }
   }, {
     key: 'isSticky',
