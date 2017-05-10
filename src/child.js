@@ -10,17 +10,20 @@ export class Component extends React.Component {
       // if there is some stuff above this component
       mytop: 0,
       // height will tell us how tall to make the spacer
-      height: 1000
+      height: props.parentHeight || 100
     }
   }
 
   setChildRef(node) {
     if(node) {
       this.node = node
-      this.setState({
-        mytop: node.offsetTop,
-        height: node.clientHeight
-      })
+      const newState = {}
+      if(node.offsetTop)
+        newState.mytop = node.offsetTop
+      if(node.clientHeight)
+        newState.height = node.clientHeight
+      if(Object.keys(newState).length > 0)
+        this.setState(newState)
     }
   }
 
@@ -28,7 +31,7 @@ export class Component extends React.Component {
     // recalculate the height and position.
     // XXX Do we need to try and do that when the browser is resized?
     const newState = {
-      height: this.node.getBoundingClientRect().height
+      height: this.node.getBoundingClientRect().height || this.state.height
     }
     if(!this.isSticky()) {
       // we may need to recalculate the top, but don't do that if we are already sticky
@@ -40,8 +43,9 @@ export class Component extends React.Component {
   }
 
   isSticky() {
-    // TODO can we make it so the component does not stick when it is taller than the container
-    return this.props.parentScrollTop > this.state.mytop
+    // console.log(`check sticky, parent scroll ${this.props.parentScrollTop}, parent height ${this.props.parentHeight}, this height ${this.state.height}`);
+    return this.props.parentScrollTop > this.state.mytop &&
+      (!this.props.parentHeight || this.props.parentHeight > this.state.height)
   }
 
   getStickyStyle() {
@@ -75,11 +79,17 @@ export class Component extends React.Component {
 }
 
 Component.propTypes = {
-  parentScrollTop: PropTypes.number.isRequired
+  parentScrollTop: PropTypes.number.isRequired,
+  parentHeight: PropTypes.number,
+  className: PropTypes.string
+}
+Component.defaultProps = {
+  className: ''
 }
 
 const container = connect((state, ownProps) => ({
-  parentScrollTop: (state.sticky[ownProps.name] && state.sticky[ownProps.name].scrollTop) || 0
+  parentScrollTop: (state.sticky[ownProps.name] && state.sticky[ownProps.name].scrollTop) || 0,
+  parentHeight: (state.sticky[ownProps.name] && state.sticky[ownProps.name].height) || 0
 }), null)(Component)
 container.displayName = 'StickyChild'
 container.propTypes = {
@@ -87,8 +97,7 @@ container.propTypes = {
   className: PropTypes.string
 }
 container.defaultProps = {
-  name: 'default',
-  className: ''
+  name: 'default'
 }
 
 export default container

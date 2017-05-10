@@ -8,13 +8,20 @@ export class Component extends React.Component {
   constructor(props) {
     super(props)
     this.initRef = this.initRef.bind(this)
+    this.onScroll = this.onScroll.bind(this)
+    this.onResize = this.onResize.bind(this)
     this.inFrame = false
   }
 
   initRef(node) {
     if(node) {
-      node.addEventListener('scroll', this.onScroll.bind(this))
+      node.addEventListener('scroll', this.onScroll)
+      window.addEventListener('resize', this.onResize)
+    } else if(this.node) {
+      this.node.removeEventListener('scroll', this.onScroll)
+      window.removeEventListener('resize', this.onResize)
     }
+    this.node = node
     // may need touchmove on iphone ?
   }
 
@@ -28,6 +35,16 @@ export class Component extends React.Component {
     }
   }
 
+  onResize() {
+    if(this.props.stickyContainerHeight !== this.node.clientHeight) {
+      this.props.onResize(this.node.clientHeight)
+    }
+  }
+
+  componentDidUpdate() {
+    this.onResize()
+  }
+
   render() {
     return <div ref={this.initRef} className={this.props.className}>
         {this.props.children}
@@ -36,6 +53,7 @@ export class Component extends React.Component {
 }
 
 const container = connect((state, ownProps) => ({
+  stickyContainerHeight: state.sticky[ownProps.name].height
 }), (dispatch, ownProps) => bindActionCreators(actions(ownProps.name), dispatch))(Component)
 container.displayName = 'StickyParent'
 container.defaultProps = {
