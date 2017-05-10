@@ -17,13 +17,10 @@ export class Component extends React.Component {
   setChildRef(node) {
     if(node) {
       this.node = node
-      const newState = {}
-      if(node.offsetTop)
-        newState.mytop = node.offsetTop
-      if(node.clientHeight)
-        newState.height = node.clientHeight
-      if(Object.keys(newState).length > 0)
-        this.setState(newState)
+      this.setState({
+        mytop: node.offsetTop || 0,
+        height: node.getBoundingClientRect().height || this.state.height
+      })
     }
   }
 

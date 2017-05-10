@@ -36,9 +36,14 @@ export class Component extends React.Component {
   }
 
   onResize() {
+    console.log('check resize', this.node.clientHeight);
     if(this.props.stickyContainerHeight !== this.node.clientHeight) {
       this.props.onResize(this.node.clientHeight)
     }
+  }
+
+  componentDidMount() {
+    this.onResize()
   }
 
   componentDidUpdate() {
@@ -53,7 +58,7 @@ export class Component extends React.Component {
 }
 
 const container = connect((state, ownProps) => ({
-  stickyContainerHeight: state.sticky[ownProps.name].height
+  stickyContainerHeight: state.sticky[ownProps.name] && state.sticky[ownProps.name].height
 }), (dispatch, ownProps) => bindActionCreators(actions(ownProps.name), dispatch))(Component)
 container.displayName = 'StickyParent'
 container.defaultProps = {
