@@ -35,8 +35,10 @@ var Component = exports.Component = function (_React$Component) {
 
     _this.setChildRef = _this.setChildRef.bind(_this);
     _this.state = {
-      sticky: false,
-      mytop: 0
+      // if there is some stuff above this component
+      mytop: 0,
+      // height will tell us how tall to make the spacer
+      height: 1000
     };
     return _this;
   }
@@ -44,7 +46,6 @@ var Component = exports.Component = function (_React$Component) {
   _createClass(Component, [{
     key: 'setChildRef',
     value: function setChildRef(node) {
-      // console.log('got ref', node);
       if (node) {
         this.node = node;
         this.setState({
@@ -54,29 +55,24 @@ var Component = exports.Component = function (_React$Component) {
       }
     }
   }, {
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(nextProps) {
-      // console.log('new props', nextProps);
-      if (nextProps.parentScrollTop !== this.props.parentScrollTop) {
-        if (!this.state.sticky && nextProps.parentScrollTop > this.state.mytop) {
-          this.setState({ sticky: true });
-        } else if (this.state.sticky && nextProps.parentScrollTop < this.state.mytop) {
-          this.setState({ sticky: false });
-        }
-      }
-    }
-  }, {
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
-      // console.log('Component Did Update');
+      // recalculate the height and position.
+      // XXX Do we need to try and do that when the browser is resized?
       var newState = {
         height: this.node.getBoundingClientRect().height
       };
-      if (!this.state.sticky) {
+      if (!this.isSticky()) {
         // we may need to recalculate the top, but don't do that if we are already sticky
         newState.mytop = this.node.offsetTop;
       }
       if (newState.height !== this.state.height || newState.mytop && newState.mytop !== this.state.mytop) this.setState(newState);
+    }
+  }, {
+    key: 'isSticky',
+    value: function isSticky() {
+      // TODO can we make it so the component does not stick when it is taller than the container
+      return this.props.parentScrollTop > this.state.mytop;
     }
   }, {
     key: 'getStickyStyle',
@@ -87,6 +83,9 @@ var Component = exports.Component = function (_React$Component) {
         zIndex: 9
       };
     }
+
+    // we need a spacer so that the stuff below this component scrolls normally
+
   }, {
     key: 'getStickySpacer',
     value: function getStickySpacer() {
@@ -97,9 +96,10 @@ var Component = exports.Component = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var style = this.state.sticky ? this.getStickyStyle() : {},
-          spacerStyle = this.state.sticky ? this.getStickySpacer() : {},
-          cls = this.state.sticky ? 'is-sticky' : '',
+      var isSticky = this.isSticky(),
+          style = isSticky ? this.getStickyStyle() : {},
+          spacerStyle = isSticky ? this.getStickySpacer() : {},
+          cls = isSticky ? 'is-sticky' : '',
           childCls = 'sticky-child ' + this.props.className;
       return _react2.default.createElement(
         'div',
