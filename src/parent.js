@@ -17,6 +17,7 @@ export class Component extends React.Component {
     if(node) {
       node.addEventListener('scroll', this.onScroll)
       window.addEventListener('resize', this.onResize)
+      this.onResize()
     } else if(this.node) {
       this.node.removeEventListener('scroll', this.onScroll)
       window.removeEventListener('resize', this.onResize)
@@ -36,14 +37,9 @@ export class Component extends React.Component {
   }
 
   onResize() {
-    console.log('check resize', this.node.clientHeight);
     if(this.props.stickyContainerHeight !== this.node.clientHeight) {
       this.props.onResize(this.node.clientHeight)
     }
-  }
-
-  componentDidMount() {
-    this.onResize()
   }
 
   componentDidUpdate() {
