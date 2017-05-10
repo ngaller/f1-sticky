@@ -7,13 +7,14 @@ export class Component extends React.Component {
     super(props)
     this.setChildRef = this.setChildRef.bind(this)
     this.state = {
-      sticky: false,
-      mytop: 0
+      // if there is some stuff above this component
+      mytop: 0,
+      // height will tell us how tall to make the spacer
+      height: 1000
     }
   }
 
   setChildRef(node) {
-    // console.log('got ref', node);
     if(node) {
       this.node = node
       this.setState({
@@ -23,30 +24,24 @@ export class Component extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    // console.log('new props', nextProps);
-    // TODO can we make it so the component does not stick when it is taller than the container
-    if(nextProps.parentScrollTop !== this.props.parentScrollTop) {
-      if(!this.state.sticky && nextProps.parentScrollTop > this.state.mytop) {
-        this.setState({sticky: true})
-      } else if(this.state.sticky && nextProps.parentScrollTop < this.state.mytop) {
-        this.setState({sticky: false})
-      }
-    }
-  }
-
   componentDidUpdate() {
-    // console.log('Component Did Update');
+    // recalculate the height and position.
+    // XXX Do we need to try and do that when the browser is resized?
     const newState = {
       height: this.node.getBoundingClientRect().height
     }
-    if(!this.state.sticky) {
+    if(!this.isSticky()) {
       // we may need to recalculate the top, but don't do that if we are already sticky
       newState.mytop = this.node.offsetTop
     }
     if(newState.height !== this.state.height ||
       (newState.mytop && newState.mytop !== this.state.mytop))
       this.setState(newState)
+  }
+
+  isSticky() {
+    // TODO can we make it so the component does not stick when it is taller than the container
+    return this.props.parentScrollTop > this.state.mytop
   }
 
   getStickyStyle() {
@@ -57,6 +52,7 @@ export class Component extends React.Component {
     }
   }
 
+  // we need a spacer so that the stuff below this component scrolls normally
   getStickySpacer() {
     return {
       paddingBottom: this.state.height + 'px'
@@ -64,9 +60,10 @@ export class Component extends React.Component {
   }
 
   render() {
-    const style = this.state.sticky ? this.getStickyStyle() : {},
-      spacerStyle = this.state.sticky ? this.getStickySpacer() : {},
-      cls = (this.state.sticky ? 'is-sticky' : ''),
+    const isSticky = this.isSticky(),
+      style = isSticky ? this.getStickyStyle() : {},
+      spacerStyle = isSticky ? this.getStickySpacer() : {},
+      cls = (isSticky ? 'is-sticky' : ''),
       childCls = 'sticky-child ' + this.props.className
     return <div className={cls}>
         <div className='sticky-spacer' style={spacerStyle}></div>

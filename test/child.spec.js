@@ -18,22 +18,11 @@ describe('StickyChildComponent', () => {
     expect(wrapper.find('div.sticky-child.foo')).to.have.length(1)
   })
 
-  it('sets sticky state when scrolled past the top', (done) => {
-    const wrapper = mount(<Component parentScrollTop={0}><div className='mydiv' /></Component>)
-    wrapper.setProps({
-      parentScrollTop: 123
-    }, () => {
-      expect(wrapper.state('sticky')).to.equal(true)
-      done()
-    })
-  })
-
   it('adjusts its position when scrolled past the top', (done) => {
     const wrapper = mount(<Component parentScrollTop={0}><div className='mydiv' /></Component>)
     wrapper.setProps({
       parentScrollTop: 123
     }, () => {
-      expect(wrapper.state('sticky')).to.equal(true)
       const node = wrapper.find('.mydiv').get(0).parentNode
       expect(node.style.position).to.equal('absolute')
       expect(node.style.top).to.equal('123px')
@@ -46,7 +35,6 @@ describe('StickyChildComponent', () => {
     wrapper.setProps({
       parentScrollTop: 123
     }, () => {
-      expect(wrapper.state('sticky')).to.equal(true)
       const node = wrapper.find('.sticky-spacer').get(0)
       expect(node.style.paddingBottom).to.be.ok
       done()
@@ -60,7 +48,6 @@ describe('StickyChildComponent', () => {
     }, () => {
       wrapper.setProps({ parentScrollTop: 0 }, () => {
         setTimeout(() => {
-          expect(wrapper.state('sticky')).to.equal(false)
           const node = wrapper.find('.mydiv').get(0).parentNode
           expect(node.style.position).to.equal('')
           done()
@@ -68,4 +55,5 @@ describe('StickyChildComponent', () => {
       })
     })
   })
+  // TODO need to write more tests for edge cases, with more complex layouts
 })
