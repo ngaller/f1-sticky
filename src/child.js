@@ -25,6 +25,7 @@ export class Component extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     // console.log('new props', nextProps);
+    // TODO can we make it so the component does not stick when it is taller than the container
     if(nextProps.parentScrollTop !== this.props.parentScrollTop) {
       if(!this.state.sticky && nextProps.parentScrollTop > this.state.mytop) {
         this.setState({sticky: true})
