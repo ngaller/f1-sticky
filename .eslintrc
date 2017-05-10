@@ -1,0 +1,36 @@
+---
+parser: babel-eslint
+extends: airbnb
+env:
+  browser: true
+  node: true
+  jasmine: true
+rules:
+  react/prop-types: 0
+  react/jsx-no-bind: 0
+  import/prefer-default-export: 1
+  import/default: 2
+  camelcase: 0
+  default-case: 0
+  comma-dangle: 0
+  consistent-return: 0
+  no-new: 0
+  prefer-template: 0
+  quotes: 0
+  eqeqeq: 0
+  new-cap: 0
+  no-else-return: 0
+  arrow-body-style: 0
+  arrow-parens: 0
+  no-use-before-define: 0
+  space-before-function-paren:
+  - 2
+  - anonymous: never
+    named: never
+  max-len:
+  - 1
+  - 120
+  - 2
+  - ignoreComments: true
+
+# vim: ft=yaml
