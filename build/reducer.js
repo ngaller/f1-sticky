@@ -13,7 +13,8 @@ exports.default = function () {
 
   switch (action.type) {
     case 'f1-sticky/SCROLL':
-      return _extends({}, state, _defineProperty({}, action.meta.name, action.payload));
+    case 'f1-sticky/RESIZE':
+      return _extends({}, state, _defineProperty({}, action.meta.name, _extends({}, state[action.meta.name], action.payload)));
   }
   return state;
 };

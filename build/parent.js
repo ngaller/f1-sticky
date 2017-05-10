@@ -40,6 +40,8 @@ var Component = exports.Component = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Component.__proto__ || Object.getPrototypeOf(Component)).call(this, props));
 
     _this.initRef = _this.initRef.bind(_this);
+    _this.onScroll = _this.onScroll.bind(_this);
+    _this.onResize = _this.onResize.bind(_this);
     _this.inFrame = false;
     return _this;
   }
@@ -48,8 +50,13 @@ var Component = exports.Component = function (_React$Component) {
     key: 'initRef',
     value: function initRef(node) {
       if (node) {
-        node.addEventListener('scroll', this.onScroll.bind(this));
+        node.addEventListener('scroll', this.onScroll);
+        window.addEventListener('resize', this.onResize);
+      } else if (this.node) {
+        this.node.removeEventListener('scroll', this.onScroll);
+        window.removeEventListener('resize', this.onResize);
       }
+      this.node = node;
       // may need touchmove on iphone ?
     }
   }, {
@@ -66,6 +73,24 @@ var Component = exports.Component = function (_React$Component) {
       }
     }
   }, {
+    key: 'onResize',
+    value: function onResize() {
+      console.log('check resize', this.node.clientHeight);
+      if (this.props.stickyContainerHeight !== this.node.clientHeight) {
+        this.props.onResize(this.node.clientHeight);
+      }
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.onResize();
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      this.onResize();
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -80,7 +105,9 @@ var Component = exports.Component = function (_React$Component) {
 }(_react2.default.Component);
 
 var container = (0, _reactRedux.connect)(function (state, ownProps) {
-  return {};
+  return {
+    stickyContainerHeight: state.sticky[ownProps.name] && state.sticky[ownProps.name].height
+  };
 }, function (dispatch, ownProps) {
   return (0, _redux.bindActionCreators)((0, _actions2.default)(ownProps.name), dispatch);
 })(Component);

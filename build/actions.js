@@ -9,6 +9,9 @@ function stickyActions(name) {
   return {
     onScroll: function onScroll(scrollTop) {
       return { type: 'f1-sticky/SCROLL', payload: { scrollTop: scrollTop }, meta: { name: name } };
+    },
+    onResize: function onResize(height) {
+      return { type: 'f1-sticky/RESIZE', payload: { height: height }, meta: { name: name } };
     }
   };
 }

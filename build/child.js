@@ -38,7 +38,7 @@ var Component = exports.Component = function (_React$Component) {
       // if there is some stuff above this component
       mytop: 0,
       // height will tell us how tall to make the spacer
-      height: 1000
+      height: props.parentHeight || 100
     };
     return _this;
   }
@@ -49,8 +49,8 @@ var Component = exports.Component = function (_React$Component) {
       if (node) {
         this.node = node;
         this.setState({
-          mytop: node.offsetTop,
-          height: node.clientHeight
+          mytop: node.offsetTop || 0,
+          height: node.getBoundingClientRect().height || this.state.height
         });
       }
     }
@@ -60,7 +60,7 @@ var Component = exports.Component = function (_React$Component) {
       // recalculate the height and position.
       // XXX Do we need to try and do that when the browser is resized?
       var newState = {
-        height: this.node.getBoundingClientRect().height
+        height: this.node.getBoundingClientRect().height || this.state.height
       };
       if (!this.isSticky()) {
         // we may need to recalculate the top, but don't do that if we are already sticky
@@ -71,8 +71,8 @@ var Component = exports.Component = function (_React$Component) {
   }, {
     key: 'isSticky',
     value: function isSticky() {
-      // TODO can we make it so the component does not stick when it is taller than the container
-      return this.props.parentScrollTop > this.state.mytop;
+      // console.log(`check sticky, parent scroll ${this.props.parentScrollTop}, parent height ${this.props.parentHeight}, this height ${this.state.height}`);
+      return this.props.parentScrollTop > this.state.mytop && (!this.props.parentHeight || this.props.parentHeight > this.state.height);
     }
   }, {
     key: 'getStickyStyle',
@@ -118,12 +118,18 @@ var Component = exports.Component = function (_React$Component) {
 }(_react2.default.Component);
 
 Component.propTypes = {
-  parentScrollTop: _propTypes2.default.number.isRequired
+  parentScrollTop: _propTypes2.default.number.isRequired,
+  parentHeight: _propTypes2.default.number,
+  className: _propTypes2.default.string
+};
+Component.defaultProps = {
+  className: ''
 };
 
 var container = (0, _reactRedux.connect)(function (state, ownProps) {
   return {
-    parentScrollTop: state.sticky[ownProps.name] && state.sticky[ownProps.name].scrollTop || 0
+    parentScrollTop: state.sticky[ownProps.name] && state.sticky[ownProps.name].scrollTop || 0,
+    parentHeight: state.sticky[ownProps.name] && state.sticky[ownProps.name].height || 0
   };
 }, null)(Component);
 container.displayName = 'StickyChild';
@@ -132,8 +138,7 @@ container.propTypes = {
   className: _propTypes2.default.string
 };
 container.defaultProps = {
-  name: 'default',
-  className: ''
+  name: 'default'
 };
 
 exports.default = container;
