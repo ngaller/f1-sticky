@@ -52,6 +52,7 @@ var Component = exports.Component = function (_React$Component) {
       if (node) {
         node.addEventListener('scroll', this.onScroll);
         window.addEventListener('resize', this.onResize);
+        this.onResize();
       } else if (this.node) {
         this.node.removeEventListener('scroll', this.onScroll);
         window.removeEventListener('resize', this.onResize);
@@ -75,15 +76,9 @@ var Component = exports.Component = function (_React$Component) {
   }, {
     key: 'onResize',
     value: function onResize() {
-      console.log('check resize', this.node.clientHeight);
       if (this.props.stickyContainerHeight !== this.node.clientHeight) {
         this.props.onResize(this.node.clientHeight);
       }
-    }
-  }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      this.onResize();
     }
   }, {
     key: 'componentDidUpdate',
