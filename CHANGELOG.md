@@ -1,5 +1,10 @@
 # Changelog f1-sticky
 
+## 1.0.5
+
+ * Use fixed positioning
+ * Add updateRate parameter to limit rate of firing actions
+
 ## 1.0.2
 
  * Prevent sticking when taller than parent

@@ -10,7 +10,8 @@ export class Component extends React.Component {
       // if there is some stuff above this component
       mytop: 0,
       // height will tell us how tall to make the spacer
-      height: props.parentHeight || 100
+      height: props.parentHeight || 100,
+      width: 100
     }
   }
 
@@ -21,14 +22,17 @@ export class Component extends React.Component {
   }
 
   recalcHeight() {
+    const sz = this.node.getBoundingClientRect()
     const newState = {
-      height: this.node.getBoundingClientRect().height || this.state.height
+      height: sz.height || this.state.height,
+      width: sz.width || this.state.width
     }
     if(!this.isSticky()) {
       // we may need to recalculate the top, but don't do that if we are already sticky
       newState.mytop = this.node.offsetTop
     }
     if(newState.height !== this.state.height ||
+      (newState.width !== this.state.width) ||
       (newState.mytop && newState.mytop !== this.state.mytop))
       this.setState(newState)
   }
@@ -51,8 +55,11 @@ export class Component extends React.Component {
 
   getStickyStyle() {
     return {
-      position: 'absolute', left: '0', right: '0',
-      top: this.props.parentScrollTop + 'px',
+      position: 'fixed',
+      width: this.state.width + 'px',
+      // left: '0',
+      // right: '0',
+      top: this.props.parentTop + 'px',
       zIndex: 9
     }
   }
@@ -81,6 +88,7 @@ export class Component extends React.Component {
 
 Component.propTypes = {
   parentScrollTop: PropTypes.number.isRequired,
+  parentTop: PropTypes.number.isRequired,
   parentHeight: PropTypes.number,
   className: PropTypes.string
 }
@@ -90,6 +98,7 @@ Component.defaultProps = {
 
 const container = connect((state, ownProps) => ({
   parentScrollTop: (state.sticky[ownProps.name] && state.sticky[ownProps.name].scrollTop) || 0,
+  parentTop: (state.sticky[ownProps.name] && state.sticky[ownProps.name].top) || 0,
   parentHeight: (state.sticky[ownProps.name] && state.sticky[ownProps.name].height) || 0
 }), null)(Component)
 container.displayName = 'StickyChild'

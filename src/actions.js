@@ -4,8 +4,8 @@ export default function stickyActions(name) {
     onScroll(scrollTop) {
       return { type: 'f1-sticky/SCROLL', payload: {scrollTop}, meta: {name} }
     },
-    onResize(height) {
-      return { type: 'f1-sticky/RESIZE', payload: {height}, meta: {name} }
+    onResize(height, top) {
+      return { type: 'f1-sticky/RESIZE', payload: {height, top}, meta: {name} }
     }
   }
 }

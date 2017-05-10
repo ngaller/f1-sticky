@@ -21,11 +21,12 @@ describe('StickyChildComponent', () => {
   it('adjusts its position when scrolled past the top', (done) => {
     const wrapper = mount(<Component parentScrollTop={0}><div className='mydiv' /></Component>)
     wrapper.setProps({
-      parentScrollTop: 123
+      parentScrollTop: 123,
+      parentTop: 50
     }, () => {
       const node = wrapper.find('.mydiv').get(0).parentNode
-      expect(node.style.position).to.equal('absolute')
-      expect(node.style.top).to.equal('123px')
+      expect(node.style.position).to.equal('fixed')
+      expect(node.style.top).to.equal('50px')
       done()
     })
   })
@@ -36,6 +37,7 @@ describe('StickyChildComponent', () => {
     const wrapper = mount(<Component parentHeight={1000} parentScrollTop={0}><div style={{height: '1000px', width: '100px'}} className='mydiv' /></Component>)
     wrapper.setProps({
       parentScrollTop: 123,
+      parentTop: 50,
       parentHeight: 200
     }, () => {
       const node = wrapper.find('.mydiv').get(0).parentNode
@@ -59,7 +61,8 @@ describe('StickyChildComponent', () => {
   it('resets position when not scrolled too much', () => {
     const wrapper = mount(<Component parentScrollTop={0}><div className='mydiv' /></Component>)
     wrapper.setProps({
-      parentScrollTop: 123
+      parentScrollTop: 123,
+      parentTop: 50
     }, () => {
       wrapper.setProps({ parentScrollTop: 0 }, () => {
         setTimeout(() => {

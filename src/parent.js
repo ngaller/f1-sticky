@@ -28,16 +28,23 @@ export class Component extends React.Component {
   onScroll(e) {
     if(!this.inFrame) {
       this.inFrame = true
-      requestAnimationFrame(() => {
+      const fn = () => requestAnimationFrame(() => {
         this.inFrame = false
         this.props.onScroll(e.target.scrollTop)
       })
+      if(this.props.updateRate)
+        setTimeout(fn, 1000 / Math.min(25, this.props.updateRate))
+      else
+        fn()
     }
   }
 
   onResize() {
-    if(this.props.stickyContainerHeight !== this.node.clientHeight) {
-      this.props.onResize(this.node.clientHeight)
+    const sz = this.node.getBoundingClientRect()
+
+    if(this.props.stickyContainerHeight !== sz.height ||
+      this.props.stickyContainerTop !== sz.top) {
+      this.props.onResize(sz.height, sz.top)
     }
   }
 
@@ -50,18 +57,27 @@ export class Component extends React.Component {
   }
 
   render() {
-    return <div ref={this.initRef} className={this.props.className}>
+    return <div ref={this.initRef} className={this.props.className || ''}>
         {this.props.children}
       </div>
   }
 }
 
 const container = connect((state, ownProps) => ({
-  stickyContainerHeight: state.sticky[ownProps.name] && state.sticky[ownProps.name].height
+  stickyContainerHeight: state.sticky[ownProps.name] && state.sticky[ownProps.name].height,
+  stickyContainerTop: state.sticky[ownProps.name] && state.sticky[ownProps.name].top
 }), (dispatch, ownProps) => bindActionCreators(actions(ownProps.name), dispatch))(Component)
 container.displayName = 'StickyParent'
 container.defaultProps = {
   name: 'default'
+}
+container.propTypes = {
+  // updates / second (leave unspecified to fire as fast as possible)
+  updateRate: PropTypes.number,
+  // this is needed if there are more than 1 stickies
+  name: PropTypes.string,
+  // optional class
+  className: PropTypes.string
 }
 
 export default container

@@ -18,13 +18,15 @@ In the containing component (the overflowing container):
 import { StickyParent } from 'f1-sticky'
 
 const Parent = () =>
-    <StickyParent>
+    <StickyParent updateRate={10}>
         {/* some content... */}
         <Content />
     </StickyParent>
 ```
 
-This component needs to be set as the positioning anchor for the child (i.e., position: relative)
+`updateRate` is optional but can be specified to limit the # of updates per
+second.  It will slightly delay the component becoming "sticky" but can
+improve performance on an app with a lot of components.
 
 In the child component:
 

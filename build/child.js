@@ -38,7 +38,8 @@ var Component = exports.Component = function (_React$Component) {
       // if there is some stuff above this component
       mytop: 0,
       // height will tell us how tall to make the spacer
-      height: props.parentHeight || 100
+      height: props.parentHeight || 100,
+      width: 100
     };
     return _this;
   }
@@ -53,14 +54,16 @@ var Component = exports.Component = function (_React$Component) {
   }, {
     key: 'recalcHeight',
     value: function recalcHeight() {
+      var sz = this.node.getBoundingClientRect();
       var newState = {
-        height: this.node.getBoundingClientRect().height || this.state.height
+        height: sz.height || this.state.height,
+        width: sz.width || this.state.width
       };
       if (!this.isSticky()) {
         // we may need to recalculate the top, but don't do that if we are already sticky
         newState.mytop = this.node.offsetTop;
       }
-      if (newState.height !== this.state.height || newState.mytop && newState.mytop !== this.state.mytop) this.setState(newState);
+      if (newState.height !== this.state.height || newState.width !== this.state.width || newState.mytop && newState.mytop !== this.state.mytop) this.setState(newState);
     }
   }, {
     key: 'componentDidMount',
@@ -84,8 +87,11 @@ var Component = exports.Component = function (_React$Component) {
     key: 'getStickyStyle',
     value: function getStickyStyle() {
       return {
-        position: 'absolute', left: '0', right: '0',
-        top: this.props.parentScrollTop + 'px',
+        position: 'fixed',
+        width: this.state.width + 'px',
+        // left: '0',
+        // right: '0',
+        top: this.props.parentTop + 'px',
         zIndex: 9
       };
     }
@@ -125,6 +131,7 @@ var Component = exports.Component = function (_React$Component) {
 
 Component.propTypes = {
   parentScrollTop: _propTypes2.default.number.isRequired,
+  parentTop: _propTypes2.default.number.isRequired,
   parentHeight: _propTypes2.default.number,
   className: _propTypes2.default.string
 };
@@ -135,6 +142,7 @@ Component.defaultProps = {
 var container = (0, _reactRedux.connect)(function (state, ownProps) {
   return {
     parentScrollTop: state.sticky[ownProps.name] && state.sticky[ownProps.name].scrollTop || 0,
+    parentTop: state.sticky[ownProps.name] && state.sticky[ownProps.name].top || 0,
     parentHeight: state.sticky[ownProps.name] && state.sticky[ownProps.name].height || 0
   };
 }, null)(Component);

@@ -66,17 +66,22 @@ var Component = exports.Component = function (_React$Component) {
 
       if (!this.inFrame) {
         this.inFrame = true;
-        requestAnimationFrame(function () {
-          _this2.inFrame = false;
-          _this2.props.onScroll(e.target.scrollTop);
-        });
+        var fn = function fn() {
+          return requestAnimationFrame(function () {
+            _this2.inFrame = false;
+            _this2.props.onScroll(e.target.scrollTop);
+          });
+        };
+        if (this.props.frameRate) setTimeout(fn, 1000 / Math.min(25, this.props.frameRate));else fn();
       }
     }
   }, {
     key: 'onResize',
     value: function onResize() {
-      if (this.props.stickyContainerHeight !== this.node.clientHeight) {
-        this.props.onResize(this.node.clientHeight);
+      var sz = this.node.getBoundingClientRect();
+
+      if (this.props.stickyContainerHeight !== sz.height || this.props.stickyContainerTop !== sz.top) {
+        this.props.onResize(sz.height, sz.top);
       }
     }
   }, {
@@ -94,7 +99,7 @@ var Component = exports.Component = function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { ref: this.initRef, className: this.props.className },
+        { ref: this.initRef, className: this.props.className || '' },
         this.props.children
       );
     }
@@ -105,7 +110,8 @@ var Component = exports.Component = function (_React$Component) {
 
 var container = (0, _reactRedux.connect)(function (state, ownProps) {
   return {
-    stickyContainerHeight: state.sticky[ownProps.name] && state.sticky[ownProps.name].height
+    stickyContainerHeight: state.sticky[ownProps.name] && state.sticky[ownProps.name].height,
+    stickyContainerTop: state.sticky[ownProps.name] && state.sticky[ownProps.name].top
   };
 }, function (dispatch, ownProps) {
   return (0, _redux.bindActionCreators)((0, _actions2.default)(ownProps.name), dispatch);
@@ -113,6 +119,11 @@ var container = (0, _reactRedux.connect)(function (state, ownProps) {
 container.displayName = 'StickyParent';
 container.defaultProps = {
   name: 'default'
+};
+container.propTypes = {
+  frameRate: _propTypes2.default.number,
+  name: _propTypes2.default.string,
+  className: _propTypes2.default.string
 };
 
 exports.default = container;
