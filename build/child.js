@@ -86,12 +86,11 @@ var Component = exports.Component = function (_React$Component) {
   }, {
     key: 'getStickyStyle',
     value: function getStickyStyle() {
+      // we could use fixed, which is more performant, but it breaks scrolling
       return {
-        position: 'fixed',
+        position: 'absolute',
         width: this.state.width + 'px',
-        // left: '0',
-        // right: '0',
-        top: this.props.parentTop + 'px',
+        top: this.props.parentScrollTop + 'px',
         zIndex: 9
       };
     }
@@ -131,7 +130,7 @@ var Component = exports.Component = function (_React$Component) {
 
 Component.propTypes = {
   parentScrollTop: _propTypes2.default.number.isRequired,
-  parentTop: _propTypes2.default.number.isRequired,
+  // parentTop: PropTypes.number.isRequired,
   parentHeight: _propTypes2.default.number,
   className: _propTypes2.default.string
 };
@@ -142,7 +141,7 @@ Component.defaultProps = {
 var container = (0, _reactRedux.connect)(function (state, ownProps) {
   return {
     parentScrollTop: state.sticky[ownProps.name] && state.sticky[ownProps.name].scrollTop || 0,
-    parentTop: state.sticky[ownProps.name] && state.sticky[ownProps.name].top || 0,
+    // parentTop: (state.sticky[ownProps.name] && state.sticky[ownProps.name].top) || 0,
     parentHeight: state.sticky[ownProps.name] && state.sticky[ownProps.name].height || 0
   };
 }, null)(Component);

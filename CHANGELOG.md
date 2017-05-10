@@ -2,7 +2,6 @@
 
 ## 1.0.5
 
- * Use fixed positioning
  * Add updateRate parameter to limit rate of firing actions
 
 ## 1.0.2

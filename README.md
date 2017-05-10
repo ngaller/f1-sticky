@@ -28,6 +28,8 @@ const Parent = () =>
 second.  It will slightly delay the component becoming "sticky" but can
 improve performance on an app with a lot of components.
 
+The parent needs to be the positioning anchor for the sticky child (i.e., `position: relative`)
+
 In the child component:
 
 ```

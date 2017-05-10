@@ -54,12 +54,11 @@ export class Component extends React.Component {
   }
 
   getStickyStyle() {
+    // we could use fixed, which is more performant, but it breaks scrolling
     return {
-      position: 'fixed',
+      position: 'absolute',
       width: this.state.width + 'px',
-      // left: '0',
-      // right: '0',
-      top: this.props.parentTop + 'px',
+      top: this.props.parentScrollTop + 'px',
       zIndex: 9
     }
   }
@@ -88,7 +87,7 @@ export class Component extends React.Component {
 
 Component.propTypes = {
   parentScrollTop: PropTypes.number.isRequired,
-  parentTop: PropTypes.number.isRequired,
+  // parentTop: PropTypes.number.isRequired,
   parentHeight: PropTypes.number,
   className: PropTypes.string
 }
@@ -98,7 +97,7 @@ Component.defaultProps = {
 
 const container = connect((state, ownProps) => ({
   parentScrollTop: (state.sticky[ownProps.name] && state.sticky[ownProps.name].scrollTop) || 0,
-  parentTop: (state.sticky[ownProps.name] && state.sticky[ownProps.name].top) || 0,
+  // parentTop: (state.sticky[ownProps.name] && state.sticky[ownProps.name].top) || 0,
   parentHeight: (state.sticky[ownProps.name] && state.sticky[ownProps.name].height) || 0
 }), null)(Component)
 container.displayName = 'StickyChild'
