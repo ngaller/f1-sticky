@@ -72,7 +72,7 @@ var Component = exports.Component = function (_React$Component) {
             _this2.props.onScroll(e.target.scrollTop);
           });
         };
-        if (this.props.frameRate) setTimeout(fn, 1000 / Math.min(25, this.props.frameRate));else fn();
+        if (this.props.updateRate) setTimeout(fn, 1000 / Math.min(25, this.props.updateRate));else fn();
       }
     }
   }, {
@@ -121,8 +121,11 @@ container.defaultProps = {
   name: 'default'
 };
 container.propTypes = {
-  frameRate: _propTypes2.default.number,
+  // updates / second (leave unspecified to fire as fast as possible)
+  updateRate: _propTypes2.default.number,
+  // this is needed if there are more than 1 stickies
   name: _propTypes2.default.string,
+  // optional class
   className: _propTypes2.default.string
 };
 
