@@ -58,7 +58,7 @@ describe('StickyChildComponent', () => {
     })
   })
 
-  it('resets position when not scrolled too much', () => {
+  it('resets position when not scrolled too much', (done) => {
     const wrapper = mount(<Component parentScrollTop={0}><div className='mydiv' /></Component>)
     wrapper.setProps({
       parentScrollTop: 123,

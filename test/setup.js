@@ -6,5 +6,5 @@ global.window = document.defaultView
 global.navigator = global.window.navigator
 global.expect = expect
 
-const React = require('react')
+require('react')
 require('enzyme')
