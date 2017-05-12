@@ -83,7 +83,8 @@ const App = () =>
 
 ## Limitations
 
- * You cannot currently have 2 sticky children.  Put them both under the same container.
+ * You cannot currently have 2 sticky children.  Put them both under the same container, and make that container
+the sticky
  * If you have more than 1 sticky parent / child in your page, you need to give them different
  names (pass a name prop to both parent and child)
  * There is a [react-sticky component](https://github.com/captivationsoftware/react-sticky)
@@ -94,3 +95,7 @@ positioned relative to a container that is itself positioned relative to another
 
  * Use `npm start` to start a sample page
  * Use `npm test` to run the tests
+ 
+## TODO
+
+ * Use a private channel instead of redux to pass scroll info?
