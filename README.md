@@ -5,7 +5,7 @@ Allows for a containing panel to have a "sticky" child: when the panel is
 scrolled down past the child's top it remains at the top of it, allowing
 the rest of the content to scroll.
 
-* NOT ACTIVELY MAINTAINED *
+*NOT ACTIVELY MAINTAINED*
 
 
 ## Install
